@@ -1,0 +1,1 @@
+{"version":3,"file":"DevicePosture.types.js","sourceRoot":"","sources":["../src/DevicePosture.types.ts"],"names":[],"mappings":"","sourcesContent":["export type DevicePostureChangePayload = {\n  posture: string;\n};\n\nexport type DevicePostureModuleEvents = {\n  onDevicePostureChange: (event: DevicePostureChangePayload) => void;\n};\n"]}
