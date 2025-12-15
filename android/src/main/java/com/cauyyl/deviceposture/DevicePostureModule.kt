@@ -1,50 +1,94 @@
 package com.cauyyl.deviceposture
 
+import android.app.Activity
+import androidx.core.content.ContextCompat
+import androidx.core.util.Consumer
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
+import androidx.window.layout.WindowLayoutInfo
+import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
-import java.net.URL
+import java.util.concurrent.Executor
 
 class DevicePostureModule : Module() {
-  // Each module class must implement the definition function. The definition consists of components
-  // that describes the module's functionality and behavior.
-  // See https://docs.expo.dev/modules/module-api for more details about available components.
+  private val foldStateDictionary = mapOf(
+    FoldingFeature.State.FLAT to "flat",
+    FoldingFeature.State.HALF_OPENED to "halfOpened"
+  )
+
+  private var windowInfoTrackerAdapter: WindowInfoTrackerCallbackAdapter? = null
+  private var windowLayoutInfoListener: Consumer<WindowLayoutInfo>? = null
+  private var lastEmittedPosture: String? = null
+  private var isObserving = false
+
   override fun definition() = ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('DevicePosture')` in JavaScript.
     Name("DevicePosture")
 
-    // Defines constant property on the module.
-    Constant("PI") {
-      Math.PI
+    Events("onDevicePostureChange")
+
+    OnStartObserving {
+      isObserving = true
+      emitInitialPosture()
+      startListeningForPostureChanges()
     }
 
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
+    OnStopObserving {
+      isObserving = false
+      stopListeningForPostureChanges()
+    }
 
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
+    OnActivityEntersForeground {
+      if (isObserving) {
+        startListeningForPostureChanges()
+      }
+    }
+
+    OnActivityEntersBackground {
+      stopListeningForPostureChanges()
+    }
+
     Function("hello") {
       "Hello world! 👋"
     }
+  }
 
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { value: String ->
-      // Send an event to JavaScript.
-      sendEvent("onChange", mapOf(
-        "value" to value
-      ))
+  private fun startListeningForPostureChanges(activityCandidate: Activity? = appContext.currentActivity as? Activity) {
+    if (windowLayoutInfoListener != null) {
+      return
     }
 
-    // Enables the module to be used as a native view. Definition components that are accepted as part of
-    // the view definition: Prop, Events.
-    View(DevicePostureView::class) {
-      // Defines a setter for the `url` prop.
-      Prop("url") { view: DevicePostureView, url: URL ->
-        view.webView.loadUrl(url.toString())
+    val activity = activityCandidate ?: return
+    val adapter = WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(activity))
+    windowInfoTrackerAdapter = adapter
+
+    val executor: Executor = ContextCompat.getMainExecutor(activity)
+    windowLayoutInfoListener = Consumer { layoutInfo ->
+      val posture = mapFoldState(layoutInfo)
+      if (posture != lastEmittedPosture) {
+        lastEmittedPosture = posture
+        sendEvent("onDevicePostureChange", mapOf("posture" to posture))
       }
-      // Defines an event that the view can send to JavaScript.
-      Events("onLoad")
     }
+
+    adapter.addWindowLayoutInfoListener(activity, executor, windowLayoutInfoListener!!)
+  }
+
+  private fun stopListeningForPostureChanges() {
+    val listener = windowLayoutInfoListener ?: return
+    windowInfoTrackerAdapter?.removeWindowLayoutInfoListener(listener)
+    windowLayoutInfoListener = null
+    windowInfoTrackerAdapter = null
+  }
+
+  private fun mapFoldState(layoutInfo: WindowLayoutInfo): String {
+    val foldingFeature = layoutInfo.displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+    return foldingFeature?.state?.let { foldStateDictionary[it] } ?: "unknown"
+  }
+
+  private fun emitInitialPosture() {
+    val initialPosture = lastEmittedPosture ?: "unknown"
+    lastEmittedPosture = initialPosture
+    sendEvent("onDevicePostureChange", mapOf("posture" to initialPosture))
   }
 }
