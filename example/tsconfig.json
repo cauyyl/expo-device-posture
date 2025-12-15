@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "expo-device-posture": ["../src/index"],
+      "expo-device-posture/*": ["../src/*"]
+    }
+  }
+}
