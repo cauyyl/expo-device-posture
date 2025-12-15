@@ -11,11 +11,5 @@ public class DevicePostureModule: Module {
     Name("DevicePosture")
 
 
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      return "Hello world! 👋"
-    }
-
-  
   }
 }

@@ -8,7 +8,6 @@ const PostureContent = () => {
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Theme: {DevicePosture.hello()}</Text>
       <Text>Device Posture: {posture}</Text>
     </View>
   );

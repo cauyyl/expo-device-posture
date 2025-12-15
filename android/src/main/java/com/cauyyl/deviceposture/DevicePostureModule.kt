@@ -47,10 +47,6 @@ class DevicePostureModule : Module() {
     OnActivityEntersBackground {
       stopListeningForPostureChanges()
     }
-
-    Function("hello") {
-      "Hello world! 👋"
-    }
   }
 
   private fun startListeningForPostureChanges(activityCandidate: Activity? = appContext.currentActivity as? Activity) {
