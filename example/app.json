@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-device-posture-example",
-    "slug": "expo-device-posture-example",
+    "name": "react-native-device-posture-example",
+    "slug": "react-native-device-posture-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

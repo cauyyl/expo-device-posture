@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
     :tvos => '15.1'
   }
   s.swift_version  = '5.9'
-  s.source         = { git: 'https://github.com/cauyyl/expo-device-posture' }
+  s.source         = { git: 'https://github.com/cauyyl/react-native-device-posture' }
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'

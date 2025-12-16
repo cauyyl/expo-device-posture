@@ -1,6 +1,9 @@
 import { Text, View } from "react-native";
-import * as DevicePosture from "expo-device-posture";
-import { DevicePostureProvider, useDevicePosture } from "expo-device-posture";
+import * as DevicePosture from "react-native-device-posture";
+import {
+  DevicePostureProvider,
+  useDevicePosture,
+} from "react-native-device-posture";
 import { useEffect } from "react";
 
 const PostureContent = () => {

@@ -1,5 +1,5 @@
 {
-  "name": "expo-device-posture",
+  "name": "react-native-device-posture",
   "version": "0.1.0",
   "description": "My new module",
   "main": "build/index.js",
@@ -18,16 +18,16 @@
   "keywords": [
     "react-native",
     "expo",
-    "expo-device-posture",
+    "react-native-device-posture",
     "DevicePosture"
   ],
-  "repository": "https://github.com/cauyyl/expo-device-posture",
+  "repository": "https://github.com/cauyyl/react-native-device-posture",
   "bugs": {
-    "url": "https://github.com/cauyyl/expo-device-posture/issues"
+    "url": "https://github.com/cauyyl/react-native-device-posture/issues"
   },
   "author": "cauyyl <cauyyl@163.com> (https://github.com/cauyyl)",
   "license": "MIT",
-  "homepage": "https://github.com/cauyyl/expo-device-posture#readme",
+  "homepage": "https://github.com/cauyyl/react-native-device-posture#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/react": "~19.1.0",

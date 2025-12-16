@@ -3,8 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "expo-device-posture": ["../src/index"],
-      "expo-device-posture/*": ["../src/*"]
+      "react-native-device-posture": ["../src/index"],
+      "react-native-device-posture/*": ["../src/*"]
     }
   }
 }
